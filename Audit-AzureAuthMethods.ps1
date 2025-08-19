@@ -47,7 +47,7 @@ param(
 
 # Script configuration
 $ScriptConfig = @{
-    RequiredModules = @('Microsoft.Graph.Authentication', 'Microsoft.Graph.Users', 'Microsoft.Graph.Policies')
+    RequiredModules = @('Microsoft.Graph.Authentication', 'Microsoft.Graph.Users')
     MaxRetries = 3
     RetryDelaySeconds = 5
     TimeoutSeconds = 300
@@ -126,20 +126,84 @@ function Invoke-WithRetry {
 function Initialize-RequiredModules {
     Write-Log "Initializing required PowerShell modules..." -Level Information
     
+    # Check PowerShell version
+    $psVersion = $PSVersionTable.PSVersion
+    Write-Log "PowerShell version: $psVersion" -Level Information
+    
+    # Check if running as administrator (needed for some module installations)
+    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+    Write-Log "Running as Administrator: $isAdmin" -Level Information
+    
     foreach ($module in $ScriptConfig.RequiredModules) {
         try {
-            if (-not (Get-Module -ListAvailable $module)) {
-                Write-Log "Installing module: $module" -Level Information
-                Install-Module $module -Force -Scope CurrentUser -ErrorAction Stop
+            Write-Log "Checking module: $module" -Level Information
+            
+            # Check if module is available in repositories
+            $availableModules = Find-Module -Name $module -ErrorAction SilentlyContinue
+            if (-not $availableModules) {
+                Write-Log "Module $module not found in available repositories" -Level Warning
+                
+                # Try alternative module names
+                $alternativeNames = @{
+                    'Microsoft.Graph.Authentication' = @('Microsoft.Graph.Authentication', 'Microsoft.Graph')
+                    'Microsoft.Graph.Users' = @('Microsoft.Graph.Users', 'Microsoft.Graph')
+                }
+                
+                if ($alternativeNames.ContainsKey($module)) {
+                    foreach ($altName in $alternativeNames[$module]) {
+                        Write-Log "Trying alternative module name: $altName" -Level Information
+                        $altModule = Find-Module -Name $altName -ErrorAction SilentlyContinue
+                        if ($altModule) {
+                            Write-Log "Found alternative module: $altName" -Level Information
+                            $module = $altName
+                            break
+                        }
+                    }
+                }
             }
             
+            # Check if module is already installed
+            if (-not (Get-Module -ListAvailable $module)) {
+                Write-Log "Installing module: $module" -Level Information
+                
+                # Try to install with different scopes
+                try {
+                    Install-Module $module -Force -Scope CurrentUser -ErrorAction Stop
+                    Write-Log "Successfully installed $module to CurrentUser scope" -Level Information
+                }
+                catch {
+                    if ($isAdmin) {
+                        Write-Log "CurrentUser installation failed, trying AllUsers scope" -Level Information
+                        Install-Module $module -Force -Scope AllUsers -ErrorAction Stop
+                        Write-Log "Successfully installed $module to AllUsers scope" -Level Information
+                    }
+                    else {
+                        throw "Failed to install module $module. Try running as Administrator or use: Install-Module $module -Force -Scope CurrentUser"
+                    }
+                }
+            }
+            
+            # Import module
             if (-not (Get-Module $module)) {
                 Write-Log "Importing module: $module" -Level Information
                 Import-Module $module -Force -ErrorAction Stop
+                Write-Log "Successfully imported module: $module" -Level Information
+            }
+            else {
+                Write-Log "Module $module is already imported" -Level Information
             }
         }
         catch {
             Write-Log "Failed to install/import module $module`: $($_.Exception.Message)" -Level Error
+            
+            # Provide helpful troubleshooting information
+            Write-Log "Troubleshooting steps:" -Level Information
+            Write-Log "1. Check internet connection" -Level Information
+            Write-Log "2. Verify PowerShell execution policy: Get-ExecutionPolicy" -Level Information
+            Write-Log "3. Try: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" -Level Information
+            Write-Log "4. Check available modules: Get-PSRepository" -Level Information
+            Write-Log "5. Try: Install-Module $module -Force -Scope CurrentUser" -Level Information
+            
             throw "Module initialization failed for $module"
         }
     }
@@ -174,8 +238,7 @@ function Connect-Tenant {
         $connectionResult = Invoke-WithRetry -ScriptBlock {
             Connect-MgGraph -TenantId $TenantId -Scopes @(
                 'User.Read.All',
-                'UserAuthenticationMethod.Read.All',
-                'Policy.Read.All'
+                'UserAuthenticationMethod.Read.All'
             ) -ErrorAction Stop
         } -OperationName "Connect-MgGraph for tenant $TenantId"
         
