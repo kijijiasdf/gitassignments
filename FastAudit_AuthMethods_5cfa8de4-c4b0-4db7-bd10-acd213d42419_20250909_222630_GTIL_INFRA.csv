@@ -1,0 +1,7 @@
+"UserPrincipalName","UserId","HasPhone","HasEmail","HasFido2","HasAuthenticator","HasHelloBusiness","HasTAP","HasSoftwareOath","PhoneDetails","EmailDetails","Fido2Details","AuthenticatorDetails","HelloBusinessDetails","TAPDetails","SoftwareOathDetails","TotalMethods","HighestAAL","HasPhishingResistant","HasPasswordless"
+"gtilazureaccount_outlook.com#EXT#@gtilazureaccountoutlook.onmicrosoft.com","ec5900cc-a7b1-4b72-b0a7-b2e2b13f86a1","False","True","False","False","False","False","False","","gtilazureaccount@outlook.com","","","","","","1","AAL1","False","False"
+"Chelsay.Hollon@gtilinf.gt.com","39d05e21-b6c3-4873-bd9f-de88184e197a","True","False","False","True","False","False","False","+1 6602163472","","","True","","","","2","AAL2","False","True"
+"christopher.mills@gtilinf.gt.com","6643fb19-597b-4fde-b2c0-12f0b738e244","False","False","False","False","False","False","True","","","","","","","","1","AAL2","False","False"
+"breakglass_gtigt@gtilinf.gt.com","294e2fa7-3184-4779-bed9-70e6ab294186","False","False","False","False","False","False","False","","","","","","","","0","NO_AUTH","False","False"
+"breakglass_gtilinf@gtilazureaccountoutlook.onmicrosoft.com","c90974fa-dfcf-43b4-8b4b-bd516c5fb733","False","False","False","False","False","False","False","","","","","","","","0","NO_AUTH","False","False"
+"sean.gray@gtilinf.gt.com","7078632e-ef83-4fe1-9324-eb1328bbf6e8","False","False","False","False","False","False","False","","","","","","","","0","NO_AUTH","False","False"

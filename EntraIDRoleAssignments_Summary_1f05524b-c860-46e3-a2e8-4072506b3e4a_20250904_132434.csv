@@ -1,0 +1,2 @@
+﻿"TenantId","ReportDate","TotalAssignments","DirectAssignments","PIMAssignments","GroupAssignments","GroupMemberAssignments","UniqueUsers","UniqueServicePrincipals","UniqueGroups","UniqueRoles","PIMEnabled","ErrorCount"
+"1f05524b-c860-46e3-a2e8-4072506b3e4a","2025-09-04 13:24:35","273","26","247","195","0","26","21","38","58","True","0"

@@ -1,0 +1,4 @@
+"UserPrincipalName","UserId","HasPhone","HasEmail","HasFido2","HasAuthenticator","HasHelloBusiness","HasTAP","HasSoftwareOath","PhoneDetails","EmailDetails","Fido2Details","AuthenticatorDetails","HelloBusinessDetails","TAPDetails","SoftwareOathDetails","TotalMethods","HighestAAL","HasPhishingResistant","HasPasswordless"
+"GTILAzureAccount_outlook.com#EXT#@GTIDHUBSyncInfra.onmicrosoft.com","a3e4a4a1-bc88-4531-bab8-bb975fdebfd3","False","False","False","False","False","False","False","","","","","","","","0","NO_AUTH","False","False"
+"Jeff.Kazimer@GTIDHUBSyncInfra.onmicrosoft.com","df2e432b-65b9-46d3-8b2e-41fe4fa15706","False","False","False","False","False","False","False","","","","","","","","0","NO_AUTH","False","False"
+"Harshitha.Paspuleti@GTIDHUBSyncInfra.onmicrosoft.com","ae3a6fe5-e38c-4f47-9b77-afacba41aa7b","False","False","False","False","False","False","False","","","","","","","","0","NO_AUTH","False","False"
